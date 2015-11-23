@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="map_screen_background_padding">16dp</dimen>
+	<dimen name="weather_info_panel_height">110dp</dimen>
+	<dimen name="weather_panel_padding">8dp</dimen>
+	<dimen name="small">4dp</dimen>
+	<dimen name="medium">8dp</dimen>
+</resources>

@@ -1,0 +1,11 @@
+<resources>
+	<string name="app_name">WeatherMap</string>
+
+	<string name="title_activity_weather_map">Weather Map</string>
+
+	<string name="message.location_cannot_be_accessed">Your location cannot be accessed</string>
+
+	<string name="error.weather_call">An error occurred when retrieving weather for this area</string>
+
+	<string name="celcius">°C</string>
+</resources>
