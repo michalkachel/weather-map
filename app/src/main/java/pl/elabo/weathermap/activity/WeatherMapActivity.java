@@ -1,6 +1,8 @@
 package pl.elabo.weathermap.activity;
 
 import android.Manifest;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import pl.elabo.weathermap.ColorUtil;
 import pl.elabo.weathermap.MessageManager;
 import pl.elabo.weathermap.R;
 import pl.elabo.weathermap.app.AppConstants;
@@ -33,6 +36,9 @@ import retrofit.Retrofit;
 
 public class WeatherMapActivity extends FragmentActivity implements OnMapReadyCallback {
 	public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 11;
+
+	@Bind(R.id.background)
+	View mBackground;
 	@Bind(R.id.weather_panel)
 	ViewGroup mWeatherPanel;
 	@Bind(R.id.location)
@@ -41,10 +47,13 @@ public class WeatherMapActivity extends FragmentActivity implements OnMapReadyCa
 	TextView mTemperature;
 	@Bind(R.id.condition_desc)
 	TextView mConditionDescription;
+
 	private GoogleMap mMap;
 	private boolean mWasFirstLocationFix = false;
 	private Call<Location> mLocationCall;
 	private Call<Weather> mWeatherCall;
+
+	private int mCurrentColor = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +159,28 @@ public class WeatherMapActivity extends FragmentActivity implements OnMapReadyCa
 		mLocation.setText(location.getCity());
 		mTemperature.setText(String.format("%s%s", weather.getTemperature(), getString(R.string.celcius)));
 		mConditionDescription.setText(weather.getConditionDescription());
+
+		try {
+			changeBackground(Integer.valueOf(weather.getTemperature()));
+		} catch (NumberFormatException nfe) {
+			nfe.printStackTrace();
+		}
+	}
+
+	private void changeBackground(int temperature) {
+		int colorTo = ColorUtil.getColor(temperature);
+		ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, colorTo);
+		colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+			@Override
+			public void onAnimationUpdate(ValueAnimator animator) {
+				mBackground.setBackgroundColor((Integer) animator.getAnimatedValue());
+			}
+
+		});
+		colorAnimation.setDuration(1000);
+		colorAnimation.start();
+		mCurrentColor = colorTo;
 	}
 
 	private void hideWeather() {
